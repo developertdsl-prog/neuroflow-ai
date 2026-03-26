@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0-jammy
+    container_name: neuroflow-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - neuroflow_mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: neuroflow_ai
+    networks:
+      - neuroflow-net
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: neuroflow-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - neuroflow_redis_data:/data
+    networks:
+      - neuroflow-net
+
+  neuroflow-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: neuroflow-api-server
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongodb:27017/neuroflow_ai
+      - REDIS_URL=redis://redis:6379
+      - LOG_LEVEL=info
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - neuroflow-net
+
+volumes:
+  neuroflow_mongo_data:
+  neuroflow_redis_data:
+
+networks:
+  neuroflow-net:
+    driver: bridge
