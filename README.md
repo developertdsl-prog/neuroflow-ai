@@ -12,37 +12,7 @@ NeuroFlow-AI is a fault-tolerant orchestration platform designed for managing co
 
 ---
 
-## 🏛️ System Architecture
 
-```mermaid
-flowchart TD
-    Client[("Enterprise Client / UI Console")] --> API["Express API Gateway & Rate Limiter"]
-    
-    subgraph SecurityShield["Safety & Guardrail Engine"]
-        API --> Guardrail["Guardrail Inspection (PII, Prompt Injection, Toxicity)"]
-        Guardrail -->|Blocked| AuditReject[("Audit Trace: Rejected Event")]
-    end
-    
-    subgraph ExecutionPlane["DAG Orchestrator & Agents"]
-        Guardrail -->|Passed| DAG["Topological DAG Dependency Resolver"]
-        DAG --> Agent1["Agent: CodeArchitect"]
-        DAG --> Agent2["Agent: DataSynthesizer"]
-        DAG --> Agent3["Agent: SecurityAuditor"]
-    end
-    
-    subgraph IntelligencePlane["Unified Model Gateway & Tools"]
-        Agent1 & Agent2 & Agent3 --> PromptEngine["Prompt Synthesizer & Tool Executor"]
-        PromptEngine --> Sandbox["Sandboxed Tool Sandbox (Bash, SQL, Web)"]
-        PromptEngine --> ModelGateway["Multi-Model Gateway (OpenAI, Anthropic, Gemini, Llama)"]
-    end
-    
-    subgraph StoragePlane["Persistence & Vector Indexing"]
-        Agent1 & Agent2 & Agent3 <--> VectorStore[("Vector Memory: Cosine Search")]
-        DAG <--> MongoLogs[("MongoDB: Workflows, Traces & State")]
-    end
-```
-
----
 
 ## 🚀 Key Architectural Features
 
